@@ -65,7 +65,8 @@ public class User {
 	}
 
 	public boolean isValid() {
-		return userName.matches("")
+		return userName.matches(GlobalVariables.NAME_REGEX) && port >= GlobalVariables.PORT_MIN
+				&& port <= GlobalVariables.PORT_MAX && ipAdress != null;
 	}
 
 }

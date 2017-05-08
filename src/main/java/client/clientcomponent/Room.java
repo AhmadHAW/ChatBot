@@ -31,7 +31,10 @@ public class Room {
 		this.users = users;
 	}
 
-	public void addUser(User user) {
+	public void addUser(User user) throws GivenObjectNotValidException {
+		if (users.contains(user)) {
+			throw new GivenObjectNotValidException("Der User: " + user.getUserName() + "befindet sich bereits im Raum");
+		}
 		users.add(user);
 	}
 
@@ -63,6 +66,16 @@ public class Room {
 		} else if (!roomName.equals(other.roomName))
 			return false;
 		return true;
+	}
+
+	public void removeUser(String userName) throws UserNotExistException {
+		for (User user : users) {
+			if (user.getUserName().equals(userName)) {
+				users.remove(user);
+				return;
+			}
+		}
+		throw new UserNotExistException("Der User: " + userName + " wurde nicht gefunden.");
 	}
 
 }

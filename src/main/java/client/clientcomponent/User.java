@@ -64,4 +64,8 @@ public class User {
 		return true;
 	}
 
+	public boolean isValid() {
+		return userName.matches("")
+	}
+
 }

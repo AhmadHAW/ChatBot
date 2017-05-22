@@ -1,4 +1,4 @@
-package client.clientcomponent;
+package client.entities;
 
 public class GlobalVariables {
 

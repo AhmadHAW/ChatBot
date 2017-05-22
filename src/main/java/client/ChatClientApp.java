@@ -5,12 +5,14 @@ import java.util.Scanner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.AsyncConfigurerSupport;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-import client.clientcomponent.ClientService;
 import client.facade.TerminalController;
 
 @SpringBootApplication
-public class ChatClientApp {
+@EnableAsync
+public class ChatClientApp extends AsyncConfigurerSupport {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ChatClientApp.class, args);

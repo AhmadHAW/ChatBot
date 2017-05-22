@@ -6,19 +6,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
-import client.clientcomponent.Room;
-import client.clientcomponent.RoomNotFoundException;
-import client.clientcomponent.ClientService;
-import client.clientcomponent.GivenObjectNotValidException;
-import client.clientcomponent.GlobalVariables;
-import client.clientcomponent.User;
-import client.clientcomponent.UserNotExistException;
+import client.entities.Room;
+import client.entities.RoomNotFoundException;
+import client.entities.GivenObjectNotValidException;
+import client.entities.GlobalVariables;
+import client.entities.User;
+import client.entities.UserNotExistException;
+import client.roomManager.RoomService;
+import client.roomManager.RoomServiceInterface;
 
 @RestController
 public class FacadeController {
 
 	@Autowired
-	private ClientService serverService;
+	private RoomServiceInterface roomService;
 
 	@RequestMapping(value = GlobalVariables.BASEPATH + GlobalVariables.ROOM_RESOURCE, method = RequestMethod.PUT)
 	public ResponseEntity<?> userJoinRoom(@PathVariable String roomName, @RequestBody User user) {
@@ -31,7 +32,7 @@ public class FacadeController {
 					+ GlobalVariables.NAME_REGEX, HttpStatus.NOT_FOUND);
 		}
 		try {
-			serverService.userJoinRoom(user, roomName);
+			roomService.userJoinRoom(user, roomName);
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		} catch (RoomNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -50,7 +51,7 @@ public class FacadeController {
 					+ GlobalVariables.NAME_REGEX, HttpStatus.NOT_FOUND);
 		}
 		try {
-			serverService.userLeaveRoom(roomName, userName);
+			roomService.userLeaveRoom(roomName, userName);
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		} catch (UserNotExistException | RoomNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

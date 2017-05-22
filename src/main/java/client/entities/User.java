@@ -1,4 +1,4 @@
-package client.clientcomponent;
+package client.entities;
 
 public class User {
 	private String userName;
@@ -20,7 +20,8 @@ public class User {
 	}
 
 	public void setUserName(String userName) {
-		this.userName = userName;
+		if (userName != null)
+			this.userName = userName;
 	}
 
 	public int getPort() {
@@ -36,7 +37,13 @@ public class User {
 	}
 
 	public void setIpAdress(String ipAdress) {
-		this.ipAdress = ipAdress;
+		if (ipAdress != null)
+			this.ipAdress = ipAdress;
+	}
+
+	public boolean isCorrect() {
+		return userName != null && userName.matches(GlobalVariables.NAME_REGEX) && port >= GlobalVariables.PORT_MIN
+				&& port <= GlobalVariables.PORT_MAX && ipAdress != null;
 	}
 
 	@Override

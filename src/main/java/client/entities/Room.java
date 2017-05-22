@@ -1,18 +1,28 @@
-package client.clientcomponent;
+package client.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Room {
 	private String roomName;
-	private List<User> users = new ArrayList<User>();
+	private Set<User> users = new HashSet<User>();
 
-	public Room() {
-
+	public Room(String roomName, Set<User> users) {
+		super();
+		if (roomName != null && users != null) {
+			this.roomName = roomName;
+			this.users = users;
+		}
 	}
 
 	public Room(String roomName) {
-		this.roomName = roomName;
+		super();
+		if (roomName != null) {
+			this.roomName = roomName;
+			this.users = new HashSet<User>();
+		}
 	}
 
 	public String getRoomName() {
@@ -20,15 +30,17 @@ public class Room {
 	}
 
 	public void setRoomName(String roomName) {
-		this.roomName = roomName;
+		if (roomName != null)
+			this.roomName = roomName;
 	}
 
-	public List<User> getUsers() {
+	public Set<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(List<User> users) {
-		this.users = users;
+	public void setUsers(Set<User> users) {
+		if (users != null)
+			this.users = users;
 	}
 
 	public void addUser(User user) throws GivenObjectNotValidException {
@@ -38,8 +50,10 @@ public class Room {
 		users.add(user);
 	}
 
-	public void removeUser(User user) {
-		users.remove(user);
+	public void removeUser(User user) throws UserNotExistException {
+		if (users.contains(user))
+			users.remove(user);
+		throw new UserNotExistException("Der User existiert nicht");
 
 	}
 

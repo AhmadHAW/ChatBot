@@ -1,14 +1,20 @@
 package client.entities;
 
-public class User {
+import client.GlobalVariables;
+
+import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+public class User implements Serializable {
 	private String userName;
 	private int port;
-	private String ipAdress;
+	private InetAddress ipAdress;
 
-	public User(String userName, int port, String ipAdress) {
+	public User(String userName, int port, String ipAdress) throws UnknownHostException {
 		this.userName = userName;
 		this.port = port;
-		this.ipAdress = ipAdress;
+		this.ipAdress = InetAddress.getByName(ipAdress);
 	}
 
 	public User() {
@@ -32,13 +38,13 @@ public class User {
 		this.port = port;
 	}
 
-	public String getIpAdress() {
+	public InetAddress getIpAdress() {
 		return ipAdress;
 	}
 
-	public void setIpAdress(String ipAdress) {
+	public void setIpAdress(String ipAdress) throws UnknownHostException {
 		if (ipAdress != null)
-			this.ipAdress = ipAdress;
+			this.ipAdress = InetAddress.getByName(ipAdress);
 	}
 
 	public boolean isCorrect() {

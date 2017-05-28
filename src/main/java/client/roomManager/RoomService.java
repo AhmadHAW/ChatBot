@@ -6,7 +6,8 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import client.entities.GivenObjectNotValidException;
-import client.entities.GlobalVariables;
+import client.GlobalVariables;
+import client.entities.NameNotValidException;
 import client.entities.Room;
 import client.entities.RoomNotFoundException;
 import client.entities.User;
@@ -19,7 +20,7 @@ public class RoomService implements RoomServiceInterface {
 	@Override
 	public void userJoinRoom(User user, String roomName) throws RoomNotFoundException, GivenObjectNotValidException {
 		if (!user.isCorrect()) {
-			throw new GivenObjectNotValidException("Der übergebene User ist ungültig");
+			throw new GivenObjectNotValidException("Der ï¿½bergebene User ist ungï¿½ltig");
 		}
 		for (Room room : rooms) {
 			if (room.getRoomName().equals(roomName)) {
@@ -51,14 +52,14 @@ public class RoomService implements RoomServiceInterface {
 			rooms.add(room);
 			return room;
 		}
-		throw new GivenObjectNotValidException("der übergebene Raumname ist ungültig");
+		throw new GivenObjectNotValidException("der ï¿½bergebene Raumname ist ungï¿½ltig");
 
 	}
 
 	@Override
 	public void deleteRoom(String roomName) throws GivenObjectNotValidException, RoomNotFoundException {
 		if (roomName == null || !roomName.matches(GlobalVariables.NAME_REGEX)) {
-			throw new GivenObjectNotValidException("Der übergebene Raumname ist ungültig");
+			throw new GivenObjectNotValidException("Der ï¿½bergebene Raumname ist ungï¿½ltig");
 		}
 		for (Room room : rooms) {
 			if (room.getRoomName().equals(roomName)) {
@@ -76,9 +77,9 @@ public class RoomService implements RoomServiceInterface {
 	}
 
 	@Override
-	public Room getRoom(String roomName) throws GivenObjectNotValidException, RoomNotFoundException {
+	public Room getRoom(String roomName) throws RoomNotFoundException, NameNotValidException {
 		if (roomName == null || !roomName.matches(GlobalVariables.NAME_REGEX)) {
-			throw new GivenObjectNotValidException("Der übergebene Raumname ist ungültig");
+			throw new NameNotValidException("Der Ã¼bergebene Raumname ist ungÃ¼ltig");
 		}
 		for (Room room : rooms) {
 			if (room.getRoomName().equals(roomName)) {

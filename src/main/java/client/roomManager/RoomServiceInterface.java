@@ -5,6 +5,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import client.entities.GivenObjectNotValidException;
+import client.entities.NameNotValidException;
 import client.entities.Room;
 import client.entities.RoomNotFoundException;
 import client.entities.User;
@@ -22,5 +23,5 @@ public interface RoomServiceInterface {
 
 	public Set<Room> getRooms();
 
-	public Room getRoom(String roomName) throws GivenObjectNotValidException, RoomNotFoundException;
+	public Room getRoom(String roomName) throws NameNotValidException, RoomNotFoundException;
 }

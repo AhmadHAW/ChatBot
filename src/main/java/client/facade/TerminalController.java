@@ -106,8 +106,8 @@ public class TerminalController implements Runnable {
 						} catch (RoomNotFoundException e) {
 							System.out.println("Der Raum konnte nicht gefunden werden.");
 							System.out.println(e.getMessage());
-						} catch (UserNotExistException e) {
-							System.out.println("Der User ist nicht in dem Raum");
+						} catch (GivenObjectNotValidException e) {
+							System.out.println("übergebene Raumname "+ argument1+" ist ungültig.");
 							System.out.println(e.getMessage());
 						}
 					}
@@ -149,9 +149,15 @@ public class TerminalController implements Runnable {
 
 					System.out.println("Der User loogt sich aus");
 
-					userInterface.loggeAus();
-					Thread.currentThread().interrupt();
+					try {
+						userInterface.loggeAus();
 					System.out.println("Der User hat sich ausgeloggt");
+					} catch (UserNotExistException e) {
+						System.out.println(e.getMessage());
+					}
+					finally {
+						Thread.currentThread().interrupt();
+					}
 					break;
 
 				case (HELPCOMMAND):

@@ -1,5 +1,7 @@
 package client.entities;
 
+import client.GlobalVariables;
+
 import java.io.Serializable;
 
 public class Message implements Serializable {
@@ -10,8 +12,12 @@ public class Message implements Serializable {
 	private String raumname;
 	private long timeStamp;
 
-	public Message(String message, String reciefeUserName, String senderUserName, String raumname, long timeStamp) {
+	public Message(String message, String reciefeUserName, String senderUserName, String raumname, long timeStamp) throws GivenObjectNotValidException {
+
 		super();
+		if(!raumname.matches(GlobalVariables.NAME_REGEX)){
+			throw new GivenObjectNotValidException("Die Felder der Message sind nicht vernünftig belegt.");
+		}
 		Message = message;
 		this.reciefeUserName = reciefeUserName;
 		this.senderUserName = senderUserName;

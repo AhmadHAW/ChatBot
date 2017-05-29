@@ -19,11 +19,11 @@ public interface UserInterface {
 
 	public Set<String> getRooms();
 
-	public void verlasseRaum(String roomName) throws RoomNotFoundException, UserNotExistException;
+	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException;
 
 	public void erstelleRaum(String roomName) throws GivenObjectNotValidException;
 
-	public void loggeAus();
+	public void loggeAus() throws UserNotExistException;
 
 	public void loggeEin(String userName, int port, String ipAdress) throws GivenObjectNotValidException;
 

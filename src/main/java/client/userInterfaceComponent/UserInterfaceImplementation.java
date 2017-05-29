@@ -38,17 +38,14 @@ public class UserInterfaceImplementation implements UserInterface {
 	@Override
 	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException {
 
-			roomService.userJoinRoom(GlobalVariables.USER,roomName);
+			roomService.createRoom(roomName);
 
 
 	}
 
 	@Override
-	public void verlasseRaum(String roomName) throws RoomNotFoundException, UserNotExistException {
-
-			roomService.userLeaveRoom(roomName,GlobalVariables.USER.getUserName());
-
-
+	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException {
+			roomService.deleteRoom(roomName);
 	}
 
 	@Override
@@ -74,8 +71,24 @@ public class UserInterfaceImplementation implements UserInterface {
 	}
 
 	@Override
-	public void loggeAus() {
-		// TODO Auto-generated method stub
+	public void loggeAus() throws UserNotExistException {
+		User thisUser = GlobalVariables.USER;
+		if(thisUser==null){
+			throw new UserNotExistException("Der User ist auf local Seiten nicht eingeloggt");
+		}
+		HttpEntity<String> request = new HttpEntity<>(thisUser.getUserName());
+		/**
+		 * Setzt ein HTTPRequest an dem Server ab. Der Server sendet bei Erfolg
+		 * ein Accepted HTTPStatuscode zurück. Wenn der Username nicht gefunden wird,
+		 * wird eine Not_Found Statuscode zurück gegeben.
+		 */
+		ResponseEntity<String> response = rt.exchange(GlobalVariables.SERVER_USER_RESOURCES+"/"+thisUser.getUserName(), HttpMethod.DELETE, request,
+				String.class);
+		if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
+
+			throw new UserNotExistException("Der User ist auf Serverseiten nicht eingeloggt");
+
+		}
 
 	}
 

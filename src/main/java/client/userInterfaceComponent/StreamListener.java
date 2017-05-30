@@ -1,4 +1,4 @@
-package client.listenerComponent;
+package client.userInterfaceComponent;
 
 import java.io.BufferedReader;
 import java.io.IOException;

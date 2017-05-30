@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import client.entities.*;
-import client.roomManager.RoomServiceInterface;
+import client.roomManagerComponent.RoomServiceUserInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -15,8 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import client.GlobalVariables;
-import client.senderComponent.UDPSenderInterface;
+import client.GlobalConstantsAndValidation;
 
 @Service
 public class UserInterfaceImplementation implements UserInterface {
@@ -27,7 +26,7 @@ public class UserInterfaceImplementation implements UserInterface {
 	UDPSenderInterface sender;
 
 	@Autowired
-	RoomServiceInterface roomService;
+	RoomServiceUserInterface roomService;
 
 	@Override
 	public void sendMessage(String roomName, String message)
@@ -58,13 +57,13 @@ public class UserInterfaceImplementation implements UserInterface {
 		 * ist oder Felder nicht korrekt belegt sind, wird eine CONFLICT
 		 * Statuscode zurück gegeben.
 		 */
-		ResponseEntity<User> response = rt.exchange(GlobalVariables.SERVER_USER_RESOURCES, HttpMethod.POST, request,
+		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
 				User.class);
 		if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
 
 			throw new GivenObjectNotValidException(
 					"Der Raum konnte nicht angelegt werden, da der Name schon vergeben ist oder nicht der Namensregex: "
-							+ GlobalVariables.NAME_REGEX + " entspricht.");
+							+ GlobalConstantsAndValidation.NAME_REGEX + " entspricht.");
 
 		}
 
@@ -72,7 +71,7 @@ public class UserInterfaceImplementation implements UserInterface {
 
 	@Override
 	public void loggeAus() throws UserNotExistException {
-		User thisUser = GlobalVariables.USER;
+		User thisUser = GlobalConstantsAndValidation.USER;
 		if(thisUser==null){
 			throw new UserNotExistException("Der User ist auf local Seiten nicht eingeloggt");
 		}
@@ -82,7 +81,7 @@ public class UserInterfaceImplementation implements UserInterface {
 		 * ein Accepted HTTPStatuscode zurück. Wenn der Username nicht gefunden wird,
 		 * wird eine Not_Found Statuscode zurück gegeben.
 		 */
-		ResponseEntity<String> response = rt.exchange(GlobalVariables.SERVER_USER_RESOURCES+"/"+thisUser.getUserName(), HttpMethod.DELETE, request,
+		ResponseEntity<String> response = rt.exchange(GlobalConstantsAndValidation.SERVER_USER_RESOURCES+"/"+thisUser.getUserName(), HttpMethod.DELETE, request,
 				String.class);
 		if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
 
@@ -94,14 +93,14 @@ public class UserInterfaceImplementation implements UserInterface {
 
 	@Override
 	public void loggeEin(String userName, int port, String ipAdress) throws GivenObjectNotValidException {
-		HttpEntity<User> request = new HttpEntity<>(GlobalVariables.USER);
+		HttpEntity<User> request = new HttpEntity<>(GlobalConstantsAndValidation.USER);
 		/**
 		 * Setzt ein HTTPRequest an dem Server ab. Der Server sendet bei Erfolg
 		 * ein Created HTTPStatuscode zurück. Wenn der Username bereits vergeben
 		 * ist oder Felder nicht korrekt belegt sind, wird eine CONFLICT
 		 * Statuscode zurück gegeben.
 		 */
-		ResponseEntity<User> response = rt.exchange(GlobalVariables.SERVER_USER_RESOURCES, HttpMethod.POST, request,
+		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
 				User.class);
 		if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
 
@@ -114,8 +113,8 @@ public class UserInterfaceImplementation implements UserInterface {
 
 	@Override
 	public void setSenderPort(int newPort) throws GivenObjectNotValidException, SocketException {
-		if(newPort<GlobalVariables.PORT_MIN||newPort>GlobalVariables.PORT_MAX){
-			throw new GivenObjectNotValidException("Der übergebene Port liegt nicht zwichen "+GlobalVariables.PORT_MIN+" und "+GlobalVariables.PORT_MAX+".");
+		if(newPort< GlobalConstantsAndValidation.PORT_MIN||newPort> GlobalConstantsAndValidation.PORT_MAX){
+			throw new GivenObjectNotValidException("Der übergebene Port liegt nicht zwichen "+ GlobalConstantsAndValidation.PORT_MIN+" und "+ GlobalConstantsAndValidation.PORT_MAX+".");
 		}
 		sender.setSenderPort(newPort);
 	}

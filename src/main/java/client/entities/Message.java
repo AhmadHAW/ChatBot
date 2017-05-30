@@ -1,6 +1,6 @@
 package client.entities;
 
-import client.GlobalVariables;
+import client.GlobalConstantsAndValidation;
 
 import java.io.Serializable;
 
@@ -15,7 +15,7 @@ public class Message implements Serializable {
 	public Message(String message, String reciefeUserName, String senderUserName, String raumname, long timeStamp) throws GivenObjectNotValidException {
 
 		super();
-		if(!raumname.matches(GlobalVariables.NAME_REGEX)){
+		if(!GlobalConstantsAndValidation.isMessageValid(message)||!GlobalConstantsAndValidation.isValidName(raumname)||!GlobalConstantsAndValidation.isValidName(senderUserName)||!GlobalConstantsAndValidation.isValidName(reciefeUserName)||!GlobalConstantsAndValidation.isValidTimeStamp(timeStamp)){
 			throw new GivenObjectNotValidException("Die Felder der Message sind nicht vernünftig belegt.");
 		}
 		Message = message;
@@ -29,7 +29,10 @@ public class Message implements Serializable {
 		return Message;
 	}
 
-	public void setMessage(String message) {
+	public void setMessage(String message) throws GivenObjectNotValidException {
+		if(!GlobalConstantsAndValidation.isMessageValid(message)){
+			throw new GivenObjectNotValidException("Die Message ist entweder null oder es leer.");
+		}
 		Message = message;
 	}
 
@@ -37,15 +40,21 @@ public class Message implements Serializable {
 		return reciefeUserName;
 	}
 
-	public void setReciefeUserName(String reciefeUserName) {
-		this.reciefeUserName = reciefeUserName;
+	public void setReciefeUserName(String recieferUserName) throws GivenObjectNotValidException {
+		if(!GlobalConstantsAndValidation.isValidName(recieferUserName)){
+			throw new GivenObjectNotValidException("Der recieferName "+recieferUserName+" ist nicht gültig.");
+		}
+		this.reciefeUserName = recieferUserName;
 	}
 
 	public String getSenderUserName() {
 		return senderUserName;
 	}
 
-	public void setSenderUserName(String senderUserName) {
+	public void setSenderUserName(String senderUserName) throws GivenObjectNotValidException {
+		if(!GlobalConstantsAndValidation.isValidName(senderUserName)){
+			throw new GivenObjectNotValidException("Der senderName "+senderUserName+" ist nicht gültig.");
+		}
 		this.senderUserName = senderUserName;
 	}
 
@@ -53,7 +62,10 @@ public class Message implements Serializable {
 		return raumname;
 	}
 
-	public void setRaumname(String raumname) {
+	public void setRaumname(String raumname) throws GivenObjectNotValidException {
+		if(!GlobalConstantsAndValidation.isValidName(raumname)){
+			throw new GivenObjectNotValidException("Der raumname "+raumname+" ist nicht gültig.");
+		}
 		this.raumname = raumname;
 	}
 
@@ -61,7 +73,10 @@ public class Message implements Serializable {
 		return timeStamp;
 	}
 
-	public void setTimeStamp(long timeStamp) {
+	public void setTimeStamp(long timeStamp) throws GivenObjectNotValidException {
+		if(timeStamp<0){
+			throw new GivenObjectNotValidException("Der timeStamp darf nicht negativ sein.");
+		}
 		this.timeStamp = timeStamp;
 	}
 
@@ -104,4 +119,6 @@ public class Message implements Serializable {
 			return false;
 		return true;
 	}
+
+
 }

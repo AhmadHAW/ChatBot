@@ -1,30 +1,25 @@
-package client.senderComponent;
+package client.userInterfaceComponent;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 
-import javax.net.ssl.SSLSocket;
-
-import client.GlobalVariables;
+import client.GlobalConstantsAndValidation;
 import client.entities.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import client.roomManager.RoomServiceInterface;
+import client.roomManagerComponent.RoomServiceUserInterface;
 
 @Service
 public class Sender implements UDPSenderInterface {
 
 	@Autowired
-	RoomServiceInterface roomServiceInterface;
+	RoomServiceUserInterface roomServiceUserInterface;
 
 	private DatagramSocket ds;
 	private int senderPort;
@@ -36,16 +31,16 @@ public class Sender implements UDPSenderInterface {
 
 	@Override
 	public void sendMessage(String roomName, String message) throws NameNotValidException, RoomNotFoundException, GivenObjectNotValidException, IOException {
-		Room room = roomServiceInterface.getRoom(roomName);
+		Room room = roomServiceUserInterface.getRoom(roomName);
 		for (User user : room.getUsers()) {
 			String reciever = user.getUserName();
 			InetAddress receiveIpAdress = user.getIpAdress();
 			int destPort = user.getPort();
-			Message messageObject = new Message(message,reciever, GlobalVariables.USER.getUserName(), roomName, System.currentTimeMillis());
+			Message messageObject = new Message(message,reciever, GlobalConstantsAndValidation.USER.getUserName(), roomName, System.currentTimeMillis());
 			try {
 				String messageAsJson = objMapper.writeValueAsString(messageObject);
 				byte[] data = messageAsJson.getBytes();
-				if(data.length>GlobalVariables.MAXMESSAGESIZE){
+				if(data.length> GlobalConstantsAndValidation.MAXMESSAGESIZE){
 					throw new GivenObjectNotValidException("Die Message ist zu lang.");
 				}
 

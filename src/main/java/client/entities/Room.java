@@ -1,5 +1,7 @@
 package client.entities;
 
+import client.GlobalConstantsAndValidation;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -9,28 +11,44 @@ public class Room {
 	private String roomName;
 	private Set<User> users = new HashSet<User>();
 
-	public Room(String roomName, Set<User> users) {
+	public Room(String roomName, Set<User> users) throws GivenObjectNotValidException {
 		super();
-		if (roomName != null && users != null) {
+		if(!GlobalConstantsAndValidation.isValidName(roomName)){
+			throw new GivenObjectNotValidException("Der Raumname "+roomName+" ist ungültig.");
+		}
+		if(users==null) {
+			throw new GivenObjectNotValidException("Die Userliste darf nicht null sein.");
+		}
+		for(User user: users){
+			if(user == null){
+				throw new GivenObjectNotValidException("In der Userliste darf sich kein NullUser befunden.");
+			}
+		}
+
 			this.roomName = roomName;
 			this.users = users;
-		}
+
 	}
 
-	public Room(String roomName) {
+	public Room(String roomName) throws GivenObjectNotValidException {
 		super();
-		if (roomName != null) {
+		if(!GlobalConstantsAndValidation.isValidName(roomName)){
+			throw new GivenObjectNotValidException("Der Raumname "+roomName+" ist ungültig.");
+		}
+
 			this.roomName = roomName;
 			this.users = new HashSet<User>();
-		}
+
 	}
 
 	public String getRoomName() {
 		return roomName;
 	}
 
-	public void setRoomName(String roomName) {
-		if (roomName != null)
+	public void setRoomName(String roomName) throws GivenObjectNotValidException {
+		if(!GlobalConstantsAndValidation.isValidName(roomName)){
+			throw new GivenObjectNotValidException("Der Raumname "+roomName+" ist ungültig.");
+		}
 			this.roomName = roomName;
 	}
 
@@ -38,12 +56,17 @@ public class Room {
 		return users;
 	}
 
-	public void setUsers(Set<User> users) {
-		if (users != null)
-			this.users = users;
+	public void setUsers(Set<User> users) throws GivenObjectNotValidException {
+		if (users == null){
+			throw new GivenObjectNotValidException("Die Userliste darf nicht null sein.");
 	}
+	this.users = users;}
 
 	public void addUser(User user) throws GivenObjectNotValidException {
+		if(user == null){
+			throw new GivenObjectNotValidException("Der User darf nicht null sein.");
+
+		}
 		if (users.contains(user)) {
 			throw new GivenObjectNotValidException("Der User: " + user.getUserName() + "befindet sich bereits im Raum");
 		}

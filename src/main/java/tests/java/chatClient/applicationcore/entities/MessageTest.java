@@ -1,4 +1,4 @@
-package tests.java.chatClient.applicationcore;
+package tests.java.chatClient.applicationcore.entities;
 
 import client.entities.GivenObjectNotValidException;
 import client.entities.Message;
@@ -69,13 +69,6 @@ class MessageTest {
         });
     }
 
-    @Test
-    public void testConstructorUnvalidRegexMessage(){
-        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
-            new Message(".",reciefer1,sender1,roomName1,timestamp1);
-        });
-    }
-
     @Test()
     public void testConstructorUnvalidRegexReciefer() {
         Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
@@ -130,11 +123,102 @@ class MessageTest {
     }
 
     @Test
-    public void testSetMessageBodyPositive(){
+    public void testSetMessageBodyPositive() throws GivenObjectNotValidException {
         message1.setMessage(messageBody2);
         assertEquals(messageBody2,message1.getMessage());
     }
 
+    @Test
+    public void testSetMessageBodyNull(){
+        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
+            message1.setMessage(null);
+        });
+    }
 
+    @Test
+    public void testSetMessageBodyEmpty(){
+        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
+            message1.setMessage("");
+        });
+    }
 
+    @Test
+    public void testSetSenderPositive() throws GivenObjectNotValidException {
+        message1.setSenderUserName(sender2);
+        assertEquals(sender2,message1.getSenderUserName());
+    }
+    @Test
+    public void testSetSenderNull(){
+        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
+            message1.setSenderUserName(null);
+        });
+    }
+
+    @Test
+    public void testSetSenderEmpty(){
+        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
+            message1.setSenderUserName("");
+        });
+    }
+
+    @Test
+    public void testSetRecieferPositive() throws GivenObjectNotValidException {
+        message1.setReciefeUserName(reciefer2);
+        assertEquals(reciefer2,message1.getReciefeUserName());
+    }
+
+    @Test
+    public void testSetRecieferNull(){
+        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
+            message1.setSenderUserName(null);
+        });
+    }
+
+    @Test
+    public void testSetRecieferEmpty(){
+        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
+            message1.setReciefeUserName("");
+        });
+    }
+
+    @Test
+    public void testSetTimeStampPositive() throws GivenObjectNotValidException {
+        message1.setTimeStamp(timestamp2);
+        assertEquals(timestamp2,message1.getTimeStamp());
+    }
+
+    @Test
+    public void testSetTimeStampNegative(){
+        Assertions.assertThrows(GivenObjectNotValidException.class, () -> {
+            message1.setTimeStamp(-1);
+        });
+    }
+
+    public void testEqualsPositiveSameIdentity(){
+     assertEquals(message1,message1);
+    }
+
+    public void testEqualsPositiveSameContentButDifferentMessage(){
+        assertEquals(message1,message3);
+    }
+
+    public void testEqualsPositiveDifferentContent(){
+        assertNotEquals(message2,message1);
+    }
+
+    public void testEqualsPositiveOtherType(){
+        assertNotEquals("message1",message1);
+    }
+
+    public void testEqualsPositiveNull(){
+        assertNotEquals(null,message1);
+    }
+
+    public void testEqualsHashCodeSame(){
+        assertEquals(message1.hashCode(),message1.hashCode());
+    }
+
+    public void testEqualsHashCodeSameContent(){
+        assertEquals(message3.hashCode(),message1.hashCode());
+    }
 }

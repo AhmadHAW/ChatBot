@@ -1,4 +1,4 @@
-package client.facade;
+package client.terminalComponent;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -9,11 +9,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import client.entities.*;
-import client.senderComponent.UDPSenderInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 
-import client.GlobalVariables;
+import client.GlobalConstantsAndValidation;
 import client.userInterfaceComponent.UserInterface;
 
 @Controller
@@ -29,7 +28,7 @@ public class TerminalController implements Runnable {
 	private static final String HELPCOMMAND = "help";
 	private static final String COMMANDREGEX = "(" + GETROOMSCOMMAND + "|" + CREATEROOMCOMMAND + "|" + JOINROOMCOMMAND
 			+ "|" + LEAVEROOMCOMMAND + "|" + LOGOUTCOMMAND + "|" + SENDMESSAGECOMMAND + "|" + HELPCOMMAND + ")( ("
-			+ GlobalVariables.NAME_REGEX + ")( (.+))?)?";
+			+ GlobalConstantsAndValidation.NAME_REGEX + ")( (.+))?)?";
 	private static final Pattern COMMANDPATTERN = Pattern.compile(COMMANDREGEX);
 
 	@Autowired
@@ -41,7 +40,7 @@ public class TerminalController implements Runnable {
 		System.out.println("Willkommen im Chatbot");
 		System.out.println("Melden Sie sich beim Server an:");
 		meldeUserAn();
-		System.out.println("Sie wurden mit dem User " + GlobalVariables.USER.getUserName() + " angemeldet");
+		System.out.println("Sie wurden mit dem User " + GlobalConstantsAndValidation.USER.getUserName() + " angemeldet");
 		System.out.println("Sie können nun: ");
 		printHelpCommands();
 		String command;
@@ -134,7 +133,7 @@ public class TerminalController implements Runnable {
 							System.out.println("Der Raum konnte nicht gefunden werden.");
 							System.out.println(e.getMessage());
 						} catch (GivenObjectNotValidException e) {
-							System.out.println("Die übergebene Message war nicht gültig, weil sie entweder kein Zeichen enthält oder größer als "+GlobalVariables.MAXMESSAGESIZE+" byte ist.");
+							System.out.println("Die übergebene Message war nicht gültig, weil sie entweder kein Zeichen enthält oder größer als "+ GlobalConstantsAndValidation.MAXMESSAGESIZE+" byte ist.");
 							System.out.println(e.getMessage());
 						} catch (NameNotValidException e) {
 							System.out.println("Der Raumname " + argument1 + " ist nicht gültig.");
@@ -184,7 +183,7 @@ public class TerminalController implements Runnable {
 	}
 
 	private void meldeUserAn() {
-		while (GlobalVariables.USER == null) {
+		while (GlobalConstantsAndValidation.USER == null) {
 			String userName = null;
 			/**
 			 * Solange der Username nicht korrekt eingegeben ist frage nach
@@ -194,9 +193,9 @@ public class TerminalController implements Runnable {
 				System.out.println("Geben Sie ihren Usernamen ein: ");
 				userName = scanner.next();
 				if (userName != null) {
-					if (!userName.matches(GlobalVariables.NAME_REGEX)) {
+					if (!userName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
 						System.out.println("Der Username: " + userName + " entspricht nicht der Regex: "
-								+ GlobalVariables.NAME_REGEX);
+								+ GlobalConstantsAndValidation.NAME_REGEX);
 						userName = null;
 					}
 				}
@@ -208,9 +207,9 @@ public class TerminalController implements Runnable {
 			while (reciefePort == -1) {
 				System.out.println("Geben Sie einen Port an, auf dem sie über UDP erreichbar sind: ");
 				reciefePort = scanner.nextInt();
-				if(reciefePort<GlobalVariables.PORT_MIN||reciefePort>GlobalVariables.PORT_MAX){
+				if(reciefePort< GlobalConstantsAndValidation.PORT_MIN||reciefePort> GlobalConstantsAndValidation.PORT_MAX){
 					reciefePort = -1;
-					System.out.println("Der Port "+reciefePort +" liegt nicht zwichen "+GlobalVariables.PORT_MIN +" und "+GlobalVariables.PORT_MAX+".");
+					System.out.println("Der Port "+reciefePort +" liegt nicht zwichen "+ GlobalConstantsAndValidation.PORT_MIN +" und "+ GlobalConstantsAndValidation.PORT_MAX+".");
 				}
 
 			}
@@ -249,12 +248,12 @@ public class TerminalController implements Runnable {
 			 * Versuche beim Server anzumelden.
 			 */
 			try {
-				GlobalVariables.USER = new User(userName, reciefePort, ipAdresse);
+				GlobalConstantsAndValidation.USER = new User(userName, reciefePort, ipAdresse);
 				userInterface.loggeEin(userName, reciefePort, ipAdresse);
 
 			} catch (GivenObjectNotValidException | UnknownHostException e) {
 				System.out.println(e.getMessage());
-				GlobalVariables.USER = null;
+				GlobalConstantsAndValidation.USER = null;
 			}
 
 		}

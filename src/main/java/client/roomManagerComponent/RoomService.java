@@ -1,4 +1,4 @@
-package client.roomManager;
+package client.roomManagerComponent;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -6,7 +6,7 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 import client.entities.GivenObjectNotValidException;
-import client.GlobalVariables;
+import client.GlobalConstantsAndValidation;
 import client.entities.NameNotValidException;
 import client.entities.Room;
 import client.entities.RoomNotFoundException;
@@ -14,7 +14,7 @@ import client.entities.User;
 import client.entities.UserNotExistException;
 
 @Service
-public class RoomService implements RoomServiceInterface {
+public class RoomService implements RoomServiceUserInterface, RoomServiceFacadeInterface {
 	private Set<Room> rooms = new HashSet<Room>();
 
 	@Override
@@ -47,7 +47,7 @@ public class RoomService implements RoomServiceInterface {
 	@Override
 	public Room createRoom(String roomName) throws GivenObjectNotValidException {
 
-		if (roomName != null && roomName.matches(GlobalVariables.NAME_REGEX)) {
+		if (roomName != null && roomName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
 			Room room = new Room(roomName);
 			rooms.add(room);
 			return room;
@@ -58,7 +58,7 @@ public class RoomService implements RoomServiceInterface {
 
 	@Override
 	public void deleteRoom(String roomName) throws GivenObjectNotValidException, RoomNotFoundException {
-		if (roomName == null || !roomName.matches(GlobalVariables.NAME_REGEX)) {
+		if (roomName == null || !roomName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
 			throw new GivenObjectNotValidException("Der �bergebene Raumname ist ung�ltig");
 		}
 		for (Room room : rooms) {
@@ -78,7 +78,7 @@ public class RoomService implements RoomServiceInterface {
 
 	@Override
 	public Room getRoom(String roomName) throws RoomNotFoundException, NameNotValidException {
-		if (roomName == null || !roomName.matches(GlobalVariables.NAME_REGEX)) {
+		if (roomName == null || !roomName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
 			throw new NameNotValidException("Der übergebene Raumname ist ungültig");
 		}
 		for (Room room : rooms) {

@@ -1,4 +1,4 @@
-package client.senderComponent;
+package client.userInterfaceComponent;
 
 import client.entities.GivenObjectNotValidException;
 import client.entities.NameNotValidException;

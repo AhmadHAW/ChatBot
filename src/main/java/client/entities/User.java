@@ -1,6 +1,6 @@
 package client.entities;
 
-import client.GlobalVariables;
+import client.GlobalConstantsAndValidation;
 
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -48,8 +48,8 @@ public class User implements Serializable {
 	}
 
 	public boolean isCorrect() {
-		return userName != null && userName.matches(GlobalVariables.NAME_REGEX) && port >= GlobalVariables.PORT_MIN
-				&& port <= GlobalVariables.PORT_MAX && ipAdress != null;
+		return userName != null && userName.matches(GlobalConstantsAndValidation.NAME_REGEX) && port >= GlobalConstantsAndValidation.PORT_MIN
+				&& port <= GlobalConstantsAndValidation.PORT_MAX && ipAdress != null;
 	}
 
 	@Override
@@ -78,8 +78,8 @@ public class User implements Serializable {
 	}
 
 	public boolean isValid() {
-		return userName.matches(GlobalVariables.NAME_REGEX) && port >= GlobalVariables.PORT_MIN
-				&& port <= GlobalVariables.PORT_MAX && ipAdress != null;
+		return userName.matches(GlobalConstantsAndValidation.NAME_REGEX) && port >= GlobalConstantsAndValidation.PORT_MIN
+				&& port <= GlobalConstantsAndValidation.PORT_MAX && ipAdress != null;
 	}
 
 }

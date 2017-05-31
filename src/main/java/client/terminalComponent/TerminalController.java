@@ -53,7 +53,12 @@ public class TerminalController implements Runnable {
 				switch (matcher.group(1)) {
 				case (GETROOMSCOMMAND):
 					System.out.println("Eine Liste aller Räume:");
-					System.out.println(userInterface.getRooms());
+					try {
+						System.out.println(userInterface.getRooms());
+					} catch (InterruptedException e) {
+						System.out.println("Irgendwas lief mit den Threads schief.");
+						System.out.println(e.getMessage());
+					}
 					break;
 				case (CREATEROOMCOMMAND):
 					if (argument1 == null) {
@@ -65,7 +70,7 @@ public class TerminalController implements Runnable {
 						try {
 							userInterface.erstelleRaum(argument1);
 							System.out.println("Der Raum: " + argument1 + " wurde erstellt.");
-						} catch (GivenObjectNotValidException e) {
+						} catch (NameNotValidException|GivenObjectNotValidException e) {
 							System.out.println("Der Raum konnte nicht angelegt werden.");
 							System.out.println(e.getMessage());
 						}
@@ -88,6 +93,12 @@ public class TerminalController implements Runnable {
 						} catch (GivenObjectNotValidException e) {
 							System.out.println("Der User wurde nicht korrekt angelegt. Starten sie die Application neu.");
 							System.out.println(e.getMessage());
+						} catch (InterruptedException e) {
+							System.out.println("Irgendwas lief mit den Threads schief.");
+							System.out.println(e.getMessage());
+						} catch (NameNotValidException e) {
+							System.out.println("Der User konnte dem Raum nicht beitreten.");
+							System.out.println(e.getMessage());
 						}
 					}
 					break;
@@ -107,6 +118,13 @@ public class TerminalController implements Runnable {
 							System.out.println(e.getMessage());
 						} catch (GivenObjectNotValidException e) {
 							System.out.println("übergebene Raumname "+ argument1+" ist ungültig.");
+							System.out.println(e.getMessage());
+						}
+						catch (InterruptedException e) {
+							System.out.println("Irgendwas lief mit den Threads schief.");
+							System.out.println(e.getMessage());
+						} catch (NameNotValidException e) {
+							System.out.println("Der User konnte dem Raum nicht verlassen.");
 							System.out.println(e.getMessage());
 						}
 					}
@@ -139,6 +157,9 @@ public class TerminalController implements Runnable {
 							System.out.println("Der Raumname " + argument1 + " ist nicht gültig.");
 							System.out.println(e.getMessage());
 						} catch (IOException e) {
+							System.out.println(e.getMessage());
+						} catch (InterruptedException e) {
+							System.out.println("Irgendwas lief mit den Threads schief.");
 							System.out.println(e.getMessage());
 						}
 					}
@@ -251,7 +272,7 @@ public class TerminalController implements Runnable {
 				GlobalConstantsAndValidation.USER = new User(userName, reciefePort, ipAdresse);
 				userInterface.loggeEin(userName, reciefePort, ipAdresse);
 
-			} catch (GivenObjectNotValidException | UnknownHostException e) {
+			} catch (NameNotValidException|GivenObjectNotValidException | UnknownHostException e) {
 				System.out.println(e.getMessage());
 				GlobalConstantsAndValidation.USER = null;
 			}

@@ -30,12 +30,12 @@ public class UserInterfaceImplementation implements UserInterface {
 
 	@Override
 	public void sendMessage(String roomName, String message)
-			throws GivenObjectNotValidException, RoomNotFoundException, NameNotValidException, IOException {
+			throws GivenObjectNotValidException, RoomNotFoundException, NameNotValidException, IOException, InterruptedException {
 		sender.sendMessage(roomName, message);
 	}
 
 	@Override
-	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException {
+	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException {
 
 			roomService.createRoom(roomName);
 
@@ -43,12 +43,12 @@ public class UserInterfaceImplementation implements UserInterface {
 	}
 
 	@Override
-	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException {
+	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException {
 			roomService.deleteRoom(roomName);
 	}
 
 	@Override
-	public void erstelleRaum(String roomName) throws GivenObjectNotValidException {
+	public void erstelleRaum(String roomName) throws GivenObjectNotValidException, NameNotValidException {
 		Room newRoom = new Room(roomName);
 		HttpEntity<Room> request = new HttpEntity<>(newRoom);
 		/**
@@ -120,7 +120,7 @@ public class UserInterfaceImplementation implements UserInterface {
 	}
 
 	@Override
-	public Set<String> getRooms() {
+	public Set<String> getRooms() throws InterruptedException {
 		Set<String> result = new HashSet<String>();
 		for(Room room: roomService.getRooms()){
 			result.add(room.getRoomName());

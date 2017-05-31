@@ -13,15 +13,15 @@ import client.entities.UserNotExistException;
 public interface UserInterface {
 
 	public void sendMessage(String roomName, String message)
-			throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, IOException;
+			throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, IOException, InterruptedException;
 
-	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException;
+	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException;
 
-	public Set<String> getRooms();
+	public Set<String> getRooms() throws InterruptedException;
 
-	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException;
+	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException;
 
-	public void erstelleRaum(String roomName) throws GivenObjectNotValidException;
+	public void erstelleRaum(String roomName) throws GivenObjectNotValidException, NameNotValidException;
 
 	public void loggeAus() throws UserNotExistException;
 

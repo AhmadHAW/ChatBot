@@ -30,7 +30,7 @@ public class Sender implements UDPSenderInterface {
 	}
 
 	@Override
-	public void sendMessage(String roomName, String message) throws NameNotValidException, RoomNotFoundException, GivenObjectNotValidException, IOException {
+	public void sendMessage(String roomName, String message) throws NameNotValidException, RoomNotFoundException, GivenObjectNotValidException, IOException, InterruptedException {
 		Room room = roomServiceUserInterface.getRoom(roomName);
 		for (User user : room.getUsers()) {
 			String reciever = user.getUserName();

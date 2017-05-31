@@ -1,16 +1,13 @@
 package client.facade;
 
+import client.entities.*;
 import client.roomManagerComponent.RoomServiceFacadeInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import client.entities.RoomNotFoundException;
-import client.entities.GivenObjectNotValidException;
 import client.GlobalConstantsAndValidation;
-import client.entities.User;
-import client.entities.UserNotExistException;
 
 @RestController
 public class FacadeController {
@@ -20,7 +17,7 @@ public class FacadeController {
 
 	@RequestMapping(value = GlobalConstantsAndValidation.BASEPATH + GlobalConstantsAndValidation.ROOM_RESOURCE, method = RequestMethod.PUT)
 	public ResponseEntity<?> userJoinRoom(@PathVariable String roomName, @RequestBody User user) {
-		if (!user.isValid()) {
+		if (!user.isCorrect()) {
 			return new ResponseEntity<>(
 					new GivenObjectNotValidException("Eines der Felder des Objektes ist nicht g�ltig ausgef�llt."),
 					HttpStatus.CONFLICT);
@@ -35,6 +32,8 @@ public class FacadeController {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
 		} catch (GivenObjectNotValidException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
+		} catch (InterruptedException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -50,8 +49,11 @@ public class FacadeController {
 		try {
 			roomService.userLeaveRoom(roomName, userName);
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
-		} catch (UserNotExistException | RoomNotFoundException e) {
+		} catch (NameNotValidException|GivenObjectNotValidException|UserNotExistException | RoomNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+		}
+		catch (InterruptedException e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 	}

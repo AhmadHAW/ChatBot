@@ -1,6 +1,7 @@
 package client.entities;
 
 import client.GlobalConstantsAndValidation;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.Serializable;
 import java.net.InetAddress;
@@ -58,6 +59,7 @@ public class User implements Serializable {
 			this.ipAdress = InetAddress.getByName(ipAdress);
 	}
 
+	@JsonIgnore
 	public boolean isCorrect() {
 		return GlobalConstantsAndValidation.isValidName(userName)&&GlobalConstantsAndValidation.isValidPort(port);
 	}

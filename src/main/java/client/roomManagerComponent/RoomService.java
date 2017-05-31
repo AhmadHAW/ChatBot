@@ -21,9 +21,12 @@ public class RoomService implements RoomServiceUserInterface, RoomServiceFacadeI
 	private Semaphore semaphore = new Semaphore(1);
 
 	@Override
-	public void userJoinRoom(User user, String roomName) throws RoomNotFoundException, GivenObjectNotValidException, InterruptedException {
+	public void userJoinRoom(User user, String roomName) throws RoomNotFoundException, GivenObjectNotValidException, InterruptedException, NameNotValidException {
 		if (user == null) {
 			throw new GivenObjectNotValidException("Der �bergebene User ist ungültig");
+		}
+		if(!GlobalConstantsAndValidation.isValidName(roomName)){
+			throw new NameNotValidException("Der Raumname "+roomName+" ist ungültig.");
 		}
 		boolean foundOne = false;
 		semaphore.acquire();

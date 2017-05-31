@@ -8,9 +8,10 @@ public class GlobalConstantsAndValidation {
 	public final static String ROOM_RESOURCE = "/rooms/{roomName}";
 	public final static String ROOM_USER_RESOURCE = "/rooms/{roomName}/users/{userName}";
 	public final static String SERVER_USER_RESOURCES = "/chatbot/users";
+	public static String SERVER_IP_ADRESS;
 
 	public final static String NAME_REGEX = "\\w+";
-	public final static String IP_ADRESS_REGEX = "\\d\\d\\d.\\d.\\d\\d\\d.\\d\\d\\d";
+	public final static String IP_ADRESS_REGEX = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
 	public final static String MESSAGE_REGEX = ".+";
 	public final static int PORT_MIN = 0;
 	public final static int PORT_MAX = 65535;
@@ -19,6 +20,9 @@ public class GlobalConstantsAndValidation {
 
 	public static void setUser(User user){
 		USER = user;
+	}
+	public static void setServerIpAdress(String ipAdress){
+		SERVER_IP_ADRESS = ipAdress;
 	}
 
 	public static boolean isMessageValid(String message){

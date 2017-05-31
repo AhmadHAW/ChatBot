@@ -100,7 +100,7 @@ public class UserInterfaceImplementation implements UserInterface {
 		 * ist oder Felder nicht korrekt belegt sind, wird eine CONFLICT
 		 * Statuscode zurück gegeben.
 		 */
-		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
+		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.SERVER_IP_ADRESS+GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
 				User.class);
 		if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
 

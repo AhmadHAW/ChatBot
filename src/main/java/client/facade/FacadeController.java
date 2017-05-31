@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import client.GlobalConstantsAndValidation;
 
+import javax.naming.NameNotFoundException;
+import java.net.UnknownHostException;
+
 @RestController
 public class FacadeController {
 
@@ -30,7 +33,7 @@ public class FacadeController {
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		} catch (RoomNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-		} catch (GivenObjectNotValidException e) {
+		} catch (NameNotValidException|GivenObjectNotValidException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.CONFLICT);
 		} catch (InterruptedException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
@@ -57,5 +60,4 @@ public class FacadeController {
 		}
 
 	}
-
 }

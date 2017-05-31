@@ -7,7 +7,7 @@ import client.entities.*;
  */
 public interface RoomServiceFacadeInterface {
 
-    public void userJoinRoom(User user, String roomName) throws RoomNotFoundException, GivenObjectNotValidException, InterruptedException;
+    public void userJoinRoom(User user, String roomName) throws RoomNotFoundException, GivenObjectNotValidException, InterruptedException, NameNotValidException;
 
     public void userLeaveRoom(String roomName, String userName) throws UserNotExistException, RoomNotFoundException, GivenObjectNotValidException, InterruptedException, NameNotValidException;
 }

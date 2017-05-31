@@ -10,13 +10,19 @@ import java.util.regex.Pattern;
 
 import client.entities.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Controller;
 
 import client.GlobalConstantsAndValidation;
 import client.userInterfaceComponent.UserInterface;
 
+import javax.annotation.PostConstruct;
+
+
 @Controller
-public class TerminalController implements Runnable {
+public class TerminalController implements CommandLineRunner {
 
 	private Scanner scanner = new Scanner(System.in);
 	private static final String GETROOMSCOMMAND = "getRooms";
@@ -33,9 +39,13 @@ public class TerminalController implements Runnable {
 
 	@Autowired
 	UserInterface userInterface;
+	@Async
+	public void run(String[] args) {
+		doItBaby(args);
 
-	@Override
-	public void run() {
+	}
+
+	private void doItBaby(String[] args) {
 		System.out.println("\n\n");
 		System.out.println("Willkommen im Chatbot");
 		System.out.println("Melden Sie sich beim Server an:");
@@ -51,145 +61,144 @@ public class TerminalController implements Runnable {
 			if (matcher.find()) {
 				String argument1 = matcher.group(3);
 				switch (matcher.group(1)) {
-				case (GETROOMSCOMMAND):
-					System.out.println("Eine Liste aller Räume:");
-					try {
-						System.out.println(userInterface.getRooms());
-					} catch (InterruptedException e) {
-						System.out.println("Irgendwas lief mit den Threads schief.");
-						System.out.println(e.getMessage());
-					}
-					break;
-				case (CREATEROOMCOMMAND):
-					if (argument1 == null) {
-						System.out.println("Der Befehl: " + CREATEROOMCOMMAND
-								+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
-								+ HELPCOMMAND + " um gültige Befehle zu finden");
-					} else {
-						System.out.println("Ein Raum wird erstellt: ");
+					case (GETROOMSCOMMAND):
+						System.out.println("Eine Liste aller Räume:");
 						try {
-							userInterface.erstelleRaum(argument1);
-							System.out.println("Der Raum: " + argument1 + " wurde erstellt.");
-						} catch (NameNotValidException|GivenObjectNotValidException e) {
-							System.out.println("Der Raum konnte nicht angelegt werden.");
-							System.out.println(e.getMessage());
-						}
-					}
-					break;
-
-				case (JOINROOMCOMMAND):
-					if (argument1 == null) {
-						System.out.println("Der Befehl: " + JOINROOMCOMMAND
-								+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
-								+ HELPCOMMAND + " um gültige Befehle zu finden");
-					} else {
-						System.out.println("Der User tritt dem Raum bei: ");
-						try {
-							userInterface.treteRaumBei(argument1);
-							System.out.println("Der User ist dem Raum: " + argument1 + " beigetreten.");
-						} catch (RoomNotFoundException e) {
-							System.out.println("Der Raum konnte nicht gefunden werden.");
-							System.out.println(e.getMessage());
-						} catch (GivenObjectNotValidException e) {
-							System.out.println("Der User wurde nicht korrekt angelegt. Starten sie die Application neu.");
-							System.out.println(e.getMessage());
-						} catch (InterruptedException e) {
-							System.out.println("Irgendwas lief mit den Threads schief.");
-							System.out.println(e.getMessage());
-						} catch (NameNotValidException e) {
-							System.out.println("Der User konnte dem Raum nicht beitreten.");
-							System.out.println(e.getMessage());
-						}
-					}
-					break;
-
-				case (LEAVEROOMCOMMAND):
-					if (argument1 == null) {
-						System.out.println("Der Befehl: " + LEAVEROOMCOMMAND
-								+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
-								+ HELPCOMMAND + " um gültige Befehle zu finden");
-					} else {
-						System.out.println("Der User verlässt den Raum");
-						try {
-							userInterface.verlasseRaum(argument1);
-							System.out.println("Der User hat den Raum: " + argument1 + " verlassen.");
-						} catch (RoomNotFoundException e) {
-							System.out.println("Der Raum konnte nicht gefunden werden.");
-							System.out.println(e.getMessage());
-						} catch (GivenObjectNotValidException e) {
-							System.out.println("übergebene Raumname "+ argument1+" ist ungültig.");
-							System.out.println(e.getMessage());
-						}
-						catch (InterruptedException e) {
-							System.out.println("Irgendwas lief mit den Threads schief.");
-							System.out.println(e.getMessage());
-						} catch (NameNotValidException e) {
-							System.out.println("Der User konnte dem Raum nicht verlassen.");
-							System.out.println(e.getMessage());
-						}
-					}
-					break;
-
-				case (SENDMESSAGECOMMAND):
-					String message = matcher.group(5);
-					if (argument1 == null) {
-						System.out.println("Der Befehl: " + SENDMESSAGECOMMAND
-								+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
-								+ HELPCOMMAND + " um gültige Befehle zu finden");
-					} else if (message == null) {
-						System.out.println("Der Befehl: " + SENDMESSAGECOMMAND
-								+ " benötigt als Argument eine gültige Message. \nNutzen sie den Command: "
-								+ HELPCOMMAND + " um gültige Befehle zu finden");
-					} else {
-
-						System.out.println("Die Message wird gesendet");
-						try {
-							userInterface.sendMessage(argument1, message);
-							System.out.println("Die Message: " + message + " wurde an alle User in dem Raum "
-									+ argument1 + " gesendet.");
-						} catch (RoomNotFoundException e) {
-							System.out.println("Der Raum konnte nicht gefunden werden.");
-							System.out.println(e.getMessage());
-						} catch (GivenObjectNotValidException e) {
-							System.out.println("Die übergebene Message war nicht gültig, weil sie entweder kein Zeichen enthält oder größer als "+ GlobalConstantsAndValidation.MAXMESSAGESIZE+" byte ist.");
-							System.out.println(e.getMessage());
-						} catch (NameNotValidException e) {
-							System.out.println("Der Raumname " + argument1 + " ist nicht gültig.");
-							System.out.println(e.getMessage());
-						} catch (IOException e) {
-							System.out.println(e.getMessage());
+							System.out.println(userInterface.getRooms());
 						} catch (InterruptedException e) {
 							System.out.println("Irgendwas lief mit den Threads schief.");
 							System.out.println(e.getMessage());
 						}
-					}
-					break;
+						break;
+					case (CREATEROOMCOMMAND):
+						if (argument1 == null) {
+							System.out.println("Der Befehl: " + CREATEROOMCOMMAND
+									+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
+									+ HELPCOMMAND + " um gültige Befehle zu finden");
+						} else {
+							System.out.println("Ein Raum wird erstellt: ");
+							try {
+								userInterface.erstelleRaum(argument1);
+								System.out.println("Der Raum: " + argument1 + " wurde erstellt.");
+							} catch (NameNotValidException|GivenObjectNotValidException e) {
+								System.out.println("Der Raum konnte nicht angelegt werden.");
+								System.out.println(e.getMessage());
+							}
+						}
+						break;
 
-				case (LOGOUTCOMMAND):
+					case (JOINROOMCOMMAND):
+						if (argument1 == null) {
+							System.out.println("Der Befehl: " + JOINROOMCOMMAND
+									+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
+									+ HELPCOMMAND + " um gültige Befehle zu finden");
+						} else {
+							System.out.println("Der User tritt dem Raum bei: ");
+							try {
+								userInterface.treteRaumBei(argument1);
+								System.out.println("Der User ist dem Raum: " + argument1 + " beigetreten.");
+							} catch (RoomNotFoundException e) {
+								System.out.println("Der Raum konnte nicht gefunden werden.");
+								System.out.println(e.getMessage());
+							} catch (GivenObjectNotValidException e) {
+								System.out.println("Der User wurde nicht korrekt angelegt. Starten sie die Application neu.");
+								System.out.println(e.getMessage());
+							} catch (InterruptedException e) {
+								System.out.println("Irgendwas lief mit den Threads schief.");
+								System.out.println(e.getMessage());
+							} catch (NameNotValidException e) {
+								System.out.println("Der User konnte dem Raum nicht beitreten.");
+								System.out.println(e.getMessage());
+							}
+						}
+						break;
 
-					System.out.println("Der User loogt sich aus");
+					case (LEAVEROOMCOMMAND):
+						if (argument1 == null) {
+							System.out.println("Der Befehl: " + LEAVEROOMCOMMAND
+									+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
+									+ HELPCOMMAND + " um gültige Befehle zu finden");
+						} else {
+							System.out.println("Der User verlässt den Raum");
+							try {
+								userInterface.verlasseRaum(argument1);
+								System.out.println("Der User hat den Raum: " + argument1 + " verlassen.");
+							} catch (RoomNotFoundException e) {
+								System.out.println("Der Raum konnte nicht gefunden werden.");
+								System.out.println(e.getMessage());
+							} catch (GivenObjectNotValidException e) {
+								System.out.println("übergebene Raumname "+ argument1+" ist ungültig.");
+								System.out.println(e.getMessage());
+							}
+							catch (InterruptedException e) {
+								System.out.println("Irgendwas lief mit den Threads schief.");
+								System.out.println(e.getMessage());
+							} catch (NameNotValidException e) {
+								System.out.println("Der User konnte dem Raum nicht verlassen.");
+								System.out.println(e.getMessage());
+							}
+						}
+						break;
 
-					try {
-						userInterface.loggeAus();
-					System.out.println("Der User hat sich ausgeloggt");
-					} catch (UserNotExistException e) {
-						System.out.println(e.getMessage());
-					}
-					finally {
-						Thread.currentThread().interrupt();
-					}
-					break;
+					case (SENDMESSAGECOMMAND):
+						String message = matcher.group(5);
+						if (argument1 == null) {
+							System.out.println("Der Befehl: " + SENDMESSAGECOMMAND
+									+ " benötigt als Argument einen gültigen Raumnamen. \nNutzen sie den Command: "
+									+ HELPCOMMAND + " um gültige Befehle zu finden");
+						} else if (message == null) {
+							System.out.println("Der Befehl: " + SENDMESSAGECOMMAND
+									+ " benötigt als Argument eine gültige Message. \nNutzen sie den Command: "
+									+ HELPCOMMAND + " um gültige Befehle zu finden");
+						} else {
 
-				case (HELPCOMMAND):
+							System.out.println("Die Message wird gesendet");
+							try {
+								userInterface.sendMessage(argument1, message);
+								System.out.println("Die Message: " + message + " wurde an alle User in dem Raum "
+										+ argument1 + " gesendet.");
+							} catch (RoomNotFoundException e) {
+								System.out.println("Der Raum konnte nicht gefunden werden.");
+								System.out.println(e.getMessage());
+							} catch (GivenObjectNotValidException e) {
+								System.out.println("Die übergebene Message war nicht gültig, weil sie entweder kein Zeichen enthält oder größer als "+ GlobalConstantsAndValidation.MAXMESSAGESIZE+" byte ist.");
+								System.out.println(e.getMessage());
+							} catch (NameNotValidException e) {
+								System.out.println("Der Raumname " + argument1 + " ist nicht gültig.");
+								System.out.println(e.getMessage());
+							} catch (IOException e) {
+								System.out.println(e.getMessage());
+							} catch (InterruptedException e) {
+								System.out.println("Irgendwas lief mit den Threads schief.");
+								System.out.println(e.getMessage());
+							}
+						}
+						break;
 
-					System.out.println("Gültige Befehle sind: ");
-					printHelpCommands();
-					break;
+					case (LOGOUTCOMMAND):
+
+						System.out.println("Der User loogt sich aus");
+
+						try {
+							userInterface.loggeAus();
+							System.out.println("Der User hat sich ausgeloggt");
+						} catch (UserNotExistException e) {
+							System.out.println(e.getMessage());
+						}
+						finally {
+							Thread.currentThread().interrupt();
+						}
+						break;
+
+					case (HELPCOMMAND):
+
+						System.out.println("Gültige Befehle sind: ");
+						printHelpCommands();
+						break;
 				}
 
 			}
 		}
-
 	}
 
 	private void printHelpCommands() {
@@ -239,7 +248,7 @@ public class TerminalController implements Runnable {
 			 */
 			int senderPort = -1;
 			while (senderPort == -1) {
-				System.out.println("Geben Sie einen Port an, auf dem sie über UDP erreichbar sind: ");
+				System.out.println("Geben Sie einen Port an, über den sie UDP Packete abschicken wollen.");
 				senderPort = scanner.nextInt();
 				/**
 				 * senderPort erstellen
@@ -265,6 +274,16 @@ public class TerminalController implements Runnable {
 					ipAdresse = scanner.next();
 				}
 			}
+
+			/**
+			 * Versuche die aktuelle IpAdresse des Servers zu erhalten.
+			 */
+
+				while (GlobalConstantsAndValidation.SERVER_IP_ADRESS == null) {
+					System.out.println("Geben Sie ihre aktuelle IpAdresse an: ");
+					GlobalConstantsAndValidation.setServerIpAdress(scanner.next());
+				}
+
 			/**
 			 * Versuche beim Server anzumelden.
 			 */

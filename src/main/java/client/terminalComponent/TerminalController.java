@@ -280,7 +280,7 @@ public class TerminalController implements CommandLineRunner {
 			 */
 
 				while (GlobalConstantsAndValidation.SERVER_IP_ADRESS == null) {
-					System.out.println("Geben Sie ihre aktuelle IpAdresse an: ");
+					System.out.println("Geben Sie die IpAdresse des Servers an: ");
 					GlobalConstantsAndValidation.setServerIpAdress(scanner.next());
 				}
 
@@ -291,7 +291,7 @@ public class TerminalController implements CommandLineRunner {
 				GlobalConstantsAndValidation.USER = new User(userName, reciefePort, ipAdresse);
 				userInterface.loggeEin(userName, reciefePort, ipAdresse);
 
-			} catch (NameNotValidException|GivenObjectNotValidException | UnknownHostException e) {
+			} catch (IOException|NameNotValidException|GivenObjectNotValidException e) {
 				System.out.println(e.getMessage());
 				GlobalConstantsAndValidation.USER = null;
 			}

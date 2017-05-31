@@ -25,7 +25,7 @@ public interface UserInterface {
 
 	public void loggeAus() throws UserNotExistException;
 
-	public void loggeEin(String userName, int port, String ipAdress) throws GivenObjectNotValidException;
+	public void loggeEin(String userName, int port, String ipAdress) throws GivenObjectNotValidException, IOException;
 
 	public void setSenderPort(int newPort) throws GivenObjectNotValidException, SocketException;
 }

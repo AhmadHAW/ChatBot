@@ -1,13 +1,17 @@
 package client.userInterfaceComponent;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.SocketException;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import client.entities.*;
 import client.roomManagerComponent.RoomServiceUserInterface;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.Property;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,9 @@ public class UserInterfaceImplementation implements UserInterface {
 
 	@Autowired
 	UDPSenderInterface sender;
+
+	@Autowired
+	Environment environment;
 
 	@Autowired
 	RoomServiceUserInterface roomService;
@@ -92,7 +99,7 @@ public class UserInterfaceImplementation implements UserInterface {
 	}
 
 	@Override
-	public void loggeEin(String userName, int port, String ipAdress) throws GivenObjectNotValidException {
+	public void loggeEin(String userName, int port, String ipAdress) throws GivenObjectNotValidException, IOException {
 		HttpEntity<User> request = new HttpEntity<>(GlobalConstantsAndValidation.USER);
 		/**
 		 * Setzt ein HTTPRequest an dem Server ab. Der Server sendet bei Erfolg
@@ -100,12 +107,22 @@ public class UserInterfaceImplementation implements UserInterface {
 		 * ist oder Felder nicht korrekt belegt sind, wird eine CONFLICT
 		 * Statuscode zurück gegeben.
 		 */
-		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.SERVER_IP_ADRESS+GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
+		System.out.println((GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+GlobalConstantsAndValidation.SERVER_USER_RESOURCES));
+		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
 				User.class);
 		if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
 
 			throw new GivenObjectNotValidException(
 					"Der User konnte nicht angelegt werden, da der Name schon vergeben ist oder die Ip-Adresse nicht erreichbar ist");
+
+		}
+		HttpEntity<Integer> request2 = new HttpEntity<Integer>(Integer.parseInt(environment.getProperty("local.server.port")));
+		ResponseEntity<Integer> res= rt.exchange(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCE+userName, HttpMethod.POST, request2,
+				Integer.class);
+		if(!res.getStatusCode().equals(HttpStatus.CREATED)){
+			throw new GivenObjectNotValidException(
+					"Der Port "+ environment.getProperty("local.server.port")+" ist nicht erlaubt.");
+
 
 		}
 

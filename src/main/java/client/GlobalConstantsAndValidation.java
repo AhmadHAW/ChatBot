@@ -8,7 +8,11 @@ public class GlobalConstantsAndValidation {
 	public final static String ROOM_RESOURCE = "/rooms/{roomName}";
 	public final static String ROOM_USER_RESOURCE = "/rooms/{roomName}/users/{userName}";
 	public final static String SERVER_USER_RESOURCES = "/chatbot/users";
+	public final static String SERVER_USER_RESOURCE = "/chatbot/users/";
+	public final static String BASE_URL = "http://";
+	public final static int SERVER_HTTP_PORT = 8080;
 	public static String SERVER_IP_ADRESS;
+	public static int Client_TCP_PORT;
 
 	public final static String NAME_REGEX = "\\w+";
 	public final static String IP_ADRESS_REGEX = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}";
@@ -23,6 +27,9 @@ public class GlobalConstantsAndValidation {
 	}
 	public static void setServerIpAdress(String ipAdress){
 		SERVER_IP_ADRESS = ipAdress;
+	}
+	public static void setClientTcpPort(int port){
+		Client_TCP_PORT = port;
 	}
 
 	public static boolean isMessageValid(String message){

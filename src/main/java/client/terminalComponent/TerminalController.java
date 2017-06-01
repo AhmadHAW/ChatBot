@@ -10,6 +10,8 @@ import java.util.regex.Pattern;
 
 import client.entities.*;
 import client.userInterfaceComponent.StreamListener;
+
+import org.omg.CORBA.Environment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -41,6 +43,7 @@ public class TerminalController implements CommandLineRunner {
 
 	@Autowired
 	UserInterface userInterface;
+	
 	@Async
 	public void run(String[] args) {
 		doItBaby(args);

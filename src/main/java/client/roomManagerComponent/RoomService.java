@@ -1,6 +1,7 @@
 package client.roomManagerComponent;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Semaphore;
 
@@ -13,7 +14,6 @@ import client.entities.Room;
 import client.entities.RoomNotFoundException;
 import client.entities.User;
 import client.entities.UserNotExistException;
-
 @Service
 public class RoomService implements RoomServiceUserInterface, RoomServiceFacadeInterface {
 	private Set<Room> rooms = new HashSet<Room>();
@@ -160,20 +160,16 @@ public class RoomService implements RoomServiceUserInterface, RoomServiceFacadeI
 		Room roomFound = null;
 		semaphore.acquire();
 		try {
-			for (Room room : rooms) {
-				if (room.getRoomName().equals(roomName)) {
-					roomFound= room;
-					break;
-				}
+			Optional<Room> opt = rooms.stream().filter(t -> t.getRoomName().equals(roomName)).findFirst();
+			if(!opt.isPresent())
+			{
+				throw new RoomNotFoundException("Der Raum mit Namen "+roomName+" existiert nicht.");
 			}
-			if(roomFound== null){
-				throw new RoomNotFoundException("Der Raum wurde nicht gefunden");
-			}
+			return opt.get();
 		}
 		finally {
 			semaphore.release();
 		}
-		return roomFound;
 	}
 
 }

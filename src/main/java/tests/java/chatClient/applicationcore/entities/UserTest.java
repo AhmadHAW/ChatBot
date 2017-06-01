@@ -141,13 +141,6 @@ class UserTest {
     }
 
     @Test
-    void setIpAdressNullTest() throws NameNotValidException {
-        Assertions.assertThrows(NameNotValidException.class, () -> {
-            user1.setIpAdress(null);
-        });
-    }
-
-    @Test
     void setIpAdressUnvalidNameTest() throws NameNotValidException {
         Assertions.assertThrows(NameNotValidException.class, () -> {
             user1.setIpAdress("22.1.231.121.2");

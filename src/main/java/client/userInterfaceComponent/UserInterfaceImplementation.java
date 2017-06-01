@@ -61,9 +61,11 @@ public class UserInterfaceImplementation implements UserInterface {
 			User[] users = rt.postForObject(url, request, User[].class);
 			Room room = roomService.createRoom(roomName);
 			for(User user: users){
+				System.out.println("Hier wir der User "+user +" Der Userliste hinzugefügt.");
 					room.addUser(user);
 			}
 		}catch (HttpClientErrorException e) {
+			System.out.println("SHIT");
 			throw new GivenObjectNotValidException(e.getStatusCode() + ": " + e.getResponseBodyAsString());
 		}
 
@@ -130,6 +132,16 @@ public class UserInterfaceImplementation implements UserInterface {
 			response= rt.postForEntity(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCE+userName,Integer.parseInt(environment.getProperty("local.server.port")), String.class);
 		}
 		catch (HttpClientErrorException e) {
+			throw new GivenObjectNotValidException(e.getStatusCode()+": "+ e.getResponseBodyAsString());
+		}
+		System.out.println("Der Port "+environment.getProperty("local.server.port"));
+		HttpEntity<String> request2 = new HttpEntity<>(environment.getProperty("local.server.port"));
+		String url = GlobalConstantsAndValidation.BASE_URL + GlobalConstantsAndValidation.SERVER_IP_ADRESS + ":" + GlobalConstantsAndValidation.SERVER_HTTP_PORT + GlobalConstantsAndValidation.SERVER_USER_RESOURCE+userName;
+		try {
+			rt.postForObject(url, request2, String.class);
+		}
+		catch (HttpClientErrorException e) {
+			System.out.println("sda");
 			throw new GivenObjectNotValidException(e.getStatusCode()+": "+ e.getResponseBodyAsString());
 		}
 

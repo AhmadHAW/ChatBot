@@ -46,6 +46,7 @@ public class Sender implements UDPSenderInterface {
 
 				DatagramPacket packet = new DatagramPacket(data, data.length, receiveIpAdress, destPort);
 				ds.send(packet);
+				System.out.println(reciever+" "+ message);
 			} catch (JsonProcessingException e) {
 				//TODO
 			}

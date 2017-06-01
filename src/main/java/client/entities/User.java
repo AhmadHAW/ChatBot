@@ -28,6 +28,10 @@ public class User implements Serializable {
 		this.ipAdress = InetAddress.getByName(ipAdress);
 	}
 
+	public void setIpAdress(InetAddress ipAdress) {
+		this.ipAdress = ipAdress;
+	}
+
 	public User(){
 
 	}

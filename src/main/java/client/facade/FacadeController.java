@@ -20,14 +20,14 @@ public class FacadeController {
 
 	@RequestMapping(value = GlobalConstantsAndValidation.BASEPATH + GlobalConstantsAndValidation.ROOM_RESOURCE, method = RequestMethod.PUT)
 	public ResponseEntity<?> userJoinRoom(@PathVariable String roomName, @RequestBody User user) {
-		if (!user.isCorrect()) {
-			return new ResponseEntity<>(
-					new GivenObjectNotValidException("Eines der Felder des Objektes ist nicht g�ltig ausgef�llt."),
-					HttpStatus.CONFLICT);
-		} else if (!roomName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
-			return new ResponseEntity<>("Der �bergebene roomName: " + roomName + " entspricht nicht der Regex: "
-					+ GlobalConstantsAndValidation.NAME_REGEX, HttpStatus.NOT_FOUND);
-		}
+//		if (!user.isCorrect()) {
+//			return new ResponseEntity<>(
+//					new GivenObjectNotValidException("Eines der Felder des Objektes ist nicht g�ltig ausgef�llt."),
+//					HttpStatus.CONFLICT);
+//		} else if (!roomName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
+//			return new ResponseEntity<>("Der �bergebene roomName: " + roomName + " entspricht nicht der Regex: "
+//					+ GlobalConstantsAndValidation.NAME_REGEX, HttpStatus.NOT_FOUND);
+//		}
 		try {
 			roomService.userJoinRoom(user, roomName);
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -43,6 +43,8 @@ public class FacadeController {
 	@RequestMapping(value = GlobalConstantsAndValidation.BASEPATH + GlobalConstantsAndValidation.ROOM_USER_RESOURCE, method = RequestMethod.POST)
 	public ResponseEntity<?> userLeaveRoom(@PathVariable String roomName, @PathVariable String userName) {
 		if (!roomName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
+			
+			
 			return new ResponseEntity<>("Der �bergebene roomName: " + roomName + " entspricht nicht der Regex: "
 					+ GlobalConstantsAndValidation.NAME_REGEX, HttpStatus.NOT_FOUND);
 		} else if (!userName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {

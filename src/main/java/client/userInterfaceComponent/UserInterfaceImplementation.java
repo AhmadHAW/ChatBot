@@ -3,12 +3,16 @@ package client.userInterfaceComponent;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.SocketException;
+import java.net.URI;
+import java.net.URL;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
 
 import client.entities.*;
 import client.roomManagerComponent.RoomServiceUserInterface;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.Property;
 import org.springframework.core.env.Environment;
@@ -34,6 +38,8 @@ public class UserInterfaceImplementation implements UserInterface {
 
 	@Autowired
 	RoomServiceUserInterface roomService;
+
+    ObjectMapper mapper = new ObjectMapper();
 
 	@Override
 	public void sendMessage(String roomName, String message)
@@ -64,8 +70,8 @@ public class UserInterfaceImplementation implements UserInterface {
 		 * ist oder Felder nicht korrekt belegt sind, wird eine CONFLICT
 		 * Statuscode zurück gegeben.
 		 */
-		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
-				User.class);
+		String url = GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_ROOM_RESOURCES;
+		ResponseEntity<?> response = rt.exchange(url, HttpMethod.POST, request,Room.class);
 		if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
 
 			throw new GivenObjectNotValidException(
@@ -73,7 +79,6 @@ public class UserInterfaceImplementation implements UserInterface {
 							+ GlobalConstantsAndValidation.NAME_REGEX + " entspricht.");
 
 		}
-
 	}
 
 	@Override
@@ -88,7 +93,7 @@ public class UserInterfaceImplementation implements UserInterface {
 		 * ein Accepted HTTPStatuscode zurück. Wenn der Username nicht gefunden wird,
 		 * wird eine Not_Found Statuscode zurück gegeben.
 		 */
-		ResponseEntity<String> response = rt.exchange(GlobalConstantsAndValidation.SERVER_USER_RESOURCES+"/"+thisUser.getUserName(), HttpMethod.DELETE, request,
+		ResponseEntity<String> response = rt.exchange(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCES+"/"+thisUser.getUserName(), HttpMethod.DELETE, request,
 				String.class);
 		if (response.getStatusCode().equals(HttpStatus.NOT_FOUND)) {
 
@@ -107,23 +112,15 @@ public class UserInterfaceImplementation implements UserInterface {
 		 * ist oder Felder nicht korrekt belegt sind, wird eine CONFLICT
 		 * Statuscode zurück gegeben.
 		 */
-		System.out.println((GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+GlobalConstantsAndValidation.SERVER_USER_RESOURCES));
-		ResponseEntity<User> response = rt.exchange(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCES, HttpMethod.POST, request,
-				User.class);
+		ResponseEntity<?> response = rt.postForEntity(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCES,GlobalConstantsAndValidation.USER, String.class );
 		if (!response.getStatusCode().equals(HttpStatus.CREATED)) {
-
-			throw new GivenObjectNotValidException(
-					"Der User konnte nicht angelegt werden, da der Name schon vergeben ist oder die Ip-Adresse nicht erreichbar ist");
+			throw new GivenObjectNotValidException("konnte den User nicht anlegen");
 
 		}
-		HttpEntity<Integer> request2 = new HttpEntity<Integer>(Integer.parseInt(environment.getProperty("local.server.port")));
-		ResponseEntity<Integer> res= rt.exchange(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCE+userName, HttpMethod.POST, request2,
-				Integer.class);
-		if(!res.getStatusCode().equals(HttpStatus.CREATED)){
+		response= rt.postForEntity(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_USER_RESOURCE+userName,Integer.parseInt(environment.getProperty("local.server.port")), String.class);
+		if(!response.getStatusCode().equals(HttpStatus.CREATED)){
 			throw new GivenObjectNotValidException(
 					"Der Port "+ environment.getProperty("local.server.port")+" ist nicht erlaubt.");
-
-
 		}
 
 	}
@@ -136,8 +133,17 @@ public class UserInterfaceImplementation implements UserInterface {
 		sender.setSenderPort(newPort);
 	}
 
-	@Override
-	public Set<String> getRooms() throws InterruptedException {
+    @Override
+    public Set<String> getRoomsServer() throws Exception {
+       ResponseEntity<?> response= rt.getForEntity(GlobalConstantsAndValidation.BASE_URL+GlobalConstantsAndValidation.SERVER_IP_ADRESS+":"+GlobalConstantsAndValidation.SERVER_HTTP_PORT+GlobalConstantsAndValidation.SERVER_ROOM_RESOURCES, Set.class);
+       if(!response.getStatusCode().equals(HttpStatus.ACCEPTED)){
+           throw new Exception("kA was da passiert ist.");
+       }
+       return (Set<String>) response.getBody();
+    }
+
+    @Override
+	public Set<String> getRoomsLocal() throws InterruptedException {
 		Set<String> result = new HashSet<String>();
 		for(Room room: roomService.getRooms()){
 			result.add(room.getRoomName());

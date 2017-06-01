@@ -29,6 +29,10 @@ public class Room {
 
 	}
 
+	public Room(){
+
+	}
+
 	public Room(String roomName) throws NameNotValidException {
 		super();
 		if(!GlobalConstantsAndValidation.isValidName(roomName)){

@@ -27,6 +27,9 @@ public class User implements Serializable {
 		this.ipAdress = InetAddress.getByName(ipAdress);
 	}
 
+	public User(){
+
+	}
 	public String getUserName() {
 		return userName;
 	}

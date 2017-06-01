@@ -25,14 +25,15 @@ import javax.annotation.PostConstruct;
 public class TerminalController implements CommandLineRunner {
 
 	private Scanner scanner = new Scanner(System.in);
-	private static final String GETROOMSCOMMAND = "getRooms";
+	private static final String GETROOMSLOCALCOMMAND = "getRoomsLocal";
+	private static final String GETROOMSSERVERCOMMAND = "getRoomsServer";
 	private static final String CREATEROOMCOMMAND = "createRoom";
 	private static final String JOINROOMCOMMAND = "joinRoom";
 	private static final String LEAVEROOMCOMMAND = "leaveRoom";
 	private static final String SENDMESSAGECOMMAND = "sendMessage";
 	private static final String LOGOUTCOMMAND = "logOut";
 	private static final String HELPCOMMAND = "help";
-	private static final String COMMANDREGEX = "(" + GETROOMSCOMMAND + "|" + CREATEROOMCOMMAND + "|" + JOINROOMCOMMAND
+	private static final String COMMANDREGEX = "(" + GETROOMSLOCALCOMMAND + "|" + CREATEROOMCOMMAND +"|"+GETROOMSSERVERCOMMAND +"|" + JOINROOMCOMMAND
 			+ "|" + LEAVEROOMCOMMAND + "|" + LOGOUTCOMMAND + "|" + SENDMESSAGECOMMAND + "|" + HELPCOMMAND + ")( ("
 			+ GlobalConstantsAndValidation.NAME_REGEX + ")( (.+))?)?";
 	private static final Pattern COMMANDPATTERN = Pattern.compile(COMMANDREGEX);
@@ -56,17 +57,30 @@ public class TerminalController implements CommandLineRunner {
 		String command;
 		Matcher matcher;
 		while (!Thread.currentThread().isInterrupted()) {
-			command = scanner.next();
+			command = scanner.nextLine();
 			matcher = COMMANDPATTERN.matcher(command);
 			if (matcher.find()) {
 				String argument1 = matcher.group(3);
 				switch (matcher.group(1)) {
-					case (GETROOMSCOMMAND):
-						System.out.println("Eine Liste aller Räume:");
+					case (GETROOMSLOCALCOMMAND):
+						System.out.println("Eine Liste aller Räume in denen man sich gerade befindet.");
 						try {
-							System.out.println(userInterface.getRooms());
+							System.out.println(userInterface.getRoomsLocal());
 						} catch (InterruptedException e) {
 							System.out.println("Irgendwas lief mit den Threads schief.");
+							System.out.println(e.getMessage());
+						}
+						break;
+					case (GETROOMSSERVERCOMMAND):
+						System.out.println("Eine Liste aller Räume des Servers:");
+						try {
+							for(String roomName: userInterface.getRoomsServer()){
+								System.out.println(roomName);
+							}
+						} catch (InterruptedException e) {
+							System.out.println("Irgendwas lief mit den Threads schief.");
+							System.out.println(e.getMessage());
+						} catch (Exception e) {
 							System.out.println(e.getMessage());
 						}
 						break;
@@ -79,7 +93,7 @@ public class TerminalController implements CommandLineRunner {
 							System.out.println("Ein Raum wird erstellt: ");
 							try {
 								userInterface.erstelleRaum(argument1);
-								System.out.println("Der Raum: " + argument1 + " wurde erstellt.");
+								System.out.println("Der Raum: " +argument1 + " wurde erstellt.");
 							} catch (NameNotValidException|GivenObjectNotValidException e) {
 								System.out.println("Der Raum konnte nicht angelegt werden.");
 								System.out.println(e.getMessage());
@@ -202,7 +216,8 @@ public class TerminalController implements CommandLineRunner {
 	}
 
 	private void printHelpCommands() {
-		System.out.println("	-eine Liste aller Räume abrufen: " + GETROOMSCOMMAND);
+		System.out.println("	-eine Liste aller Räume in der man sich befindet abrufen: " + GETROOMSLOCALCOMMAND);
+		System.out.println("	-eine Liste aller Räume die der Server anbietet: " + GETROOMSSERVERCOMMAND);
 		System.out.println("	-einen Raum erstellen: " + CREATEROOMCOMMAND + " <roomName>");
 		System.out.println("	-einen Raum beitreten: " + JOINROOMCOMMAND + " <roomName>");
 		System.out.println("	-einen Raum verlassen: " + LEAVEROOMCOMMAND + " <roomName>");

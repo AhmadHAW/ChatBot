@@ -24,6 +24,9 @@ public class Message implements Serializable {
 		this.raumname = raumname;
 		this.timeStamp = timeStamp;
 	}
+	public Message(){
+
+	}
 
 	public String getMessage() {
 		return Message;

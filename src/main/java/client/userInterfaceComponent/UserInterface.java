@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.util.Set;
 
-import client.entities.GivenObjectNotValidException;
-import client.entities.Message;
-import client.entities.NameNotValidException;
-import client.entities.RoomNotFoundException;
-import client.entities.UserNotExistException;
+import client.entities.*;
 
 public interface UserInterface {
 
@@ -17,7 +13,7 @@ public interface UserInterface {
 
 	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException;
 
-	public Set<String> getRooms() throws InterruptedException;
+	public Set<String> getRoomsLocal() throws InterruptedException;
 
 	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException;
 
@@ -28,4 +24,6 @@ public interface UserInterface {
 	public void loggeEin(String userName, int port, String ipAdress) throws GivenObjectNotValidException, IOException;
 
 	public void setSenderPort(int newPort) throws GivenObjectNotValidException, SocketException;
+
+    public Set<String> getRoomsServer() throws Exception;
 }

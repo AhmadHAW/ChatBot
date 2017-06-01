@@ -8,6 +8,7 @@ public class GlobalConstantsAndValidation {
 	public final static String ROOM_RESOURCE = "/rooms/{roomName}";
 	public final static String ROOM_USER_RESOURCE = "/rooms/{roomName}/users/{userName}";
 	public final static String SERVER_USER_RESOURCES = "/chatbot/users";
+	public final static String SERVER_ROOM_RESOURCES = "/chatbot/rooms";
 	public final static String SERVER_USER_RESOURCE = "/chatbot/users/";
 	public final static String BASE_URL = "http://";
 	public final static int SERVER_HTTP_PORT = 8080;

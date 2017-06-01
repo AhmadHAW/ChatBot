@@ -11,13 +11,13 @@ public interface UserInterface {
 	public void sendMessage(String roomName, String message)
 			throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, IOException, InterruptedException;
 
-	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException;
+	public void treteRaumBei(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException, IOException;
 
 	public Set<String> getRoomsLocal() throws InterruptedException;
 
 	public void verlasseRaum(String roomName) throws RoomNotFoundException, GivenObjectNotValidException, NameNotValidException, InterruptedException;
 
-	public void erstelleRaum(String roomName) throws GivenObjectNotValidException, NameNotValidException;
+	public void erstelleRaum(String roomName) throws GivenObjectNotValidException, NameNotValidException, InterruptedException;
 
 	public void loggeAus() throws UserNotExistException;
 

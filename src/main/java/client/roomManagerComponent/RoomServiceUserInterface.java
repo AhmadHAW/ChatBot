@@ -12,7 +12,7 @@ import client.entities.UserNotExistException;
 public interface RoomServiceUserInterface {
 
 
-	public Room createRoom(String roomName) throws GivenObjectNotValidException, InterruptedException, RoomNotFoundException, NameNotValidException;
+	public Room createRoom(String roomName) throws GivenObjectNotValidException, InterruptedException, NameNotValidException;
 
 	public void deleteRoom(String roomName) throws GivenObjectNotValidException, RoomNotFoundException, InterruptedException, NameNotValidException;
 

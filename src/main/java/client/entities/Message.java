@@ -1,15 +1,21 @@
 package client.entities;
 
 import client.GlobalConstantsAndValidation;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
 public class Message implements Serializable {
 
+	@JsonProperty("Message")
 	private String Message;
+	@JsonProperty("reciefeUserName")
 	private String reciefeUserName;
+	@JsonProperty("senderUserName")
 	private String senderUserName;
+	@JsonProperty("raumname")
 	private String raumname;
+	@JsonProperty("timeStamp")
 	private long timeStamp;
 
 	public Message(String message, String reciefeUserName, String senderUserName, String raumname, long timeStamp) throws GivenObjectNotValidException {
@@ -123,5 +129,11 @@ public class Message implements Serializable {
 		return true;
 	}
 
+	public static boolean isValidMessage(Message message) {
+		return message!=null&&message.getMessage()!=null&&GlobalConstantsAndValidation.isValidName(message.getRaumname())&&GlobalConstantsAndValidation.isValidName(message.getReciefeUserName())&&GlobalConstantsAndValidation.isValidName(message.getSenderUserName())&&(message.getReciefeUserName().equals(GlobalConstantsAndValidation.USER.getUserName())||message.getSenderUserName().equals(GlobalConstantsAndValidation.USER.getUserName()));
+	}
 
+	public boolean isMessage() {
+		return isValidMessage(this)&&this.reciefeUserName.equals(GlobalConstantsAndValidation.USER.getUserName())&&!this.senderUserName.equals(GlobalConstantsAndValidation.USER.getUserName());
+	}
 }

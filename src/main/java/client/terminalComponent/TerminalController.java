@@ -9,6 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import client.entities.*;
+import client.userInterfaceComponent.StreamListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -97,6 +98,9 @@ public class TerminalController implements CommandLineRunner {
 							} catch (NameNotValidException|GivenObjectNotValidException e) {
 								System.out.println("Der Raum konnte nicht angelegt werden.");
 								System.out.println(e.getMessage());
+							} catch (InterruptedException e) {
+								System.out.println("Da ging was in die Hose.");
+								System.out.println(e.getMessage());
 							}
 						}
 						break;
@@ -112,16 +116,15 @@ public class TerminalController implements CommandLineRunner {
 								userInterface.treteRaumBei(argument1);
 								System.out.println("Der User ist dem Raum: " + argument1 + " beigetreten.");
 							} catch (RoomNotFoundException e) {
-								System.out.println("Der Raum konnte nicht gefunden werden.");
 								System.out.println(e.getMessage());
 							} catch (GivenObjectNotValidException e) {
-								System.out.println("Der User wurde nicht korrekt angelegt. Starten sie die Application neu.");
 								System.out.println(e.getMessage());
 							} catch (InterruptedException e) {
 								System.out.println("Irgendwas lief mit den Threads schief.");
 								System.out.println(e.getMessage());
 							} catch (NameNotValidException e) {
-								System.out.println("Der User konnte dem Raum nicht beitreten.");
+								System.out.println(e.getMessage());
+							} catch (IOException e) {
 								System.out.println(e.getMessage());
 							}
 						}
@@ -289,7 +292,6 @@ public class TerminalController implements CommandLineRunner {
 					ipAdresse = scanner.next();
 				}
 			}
-
 			/**
 			 * Versuche die aktuelle IpAdresse des Servers zu erhalten.
 			 */

@@ -30,6 +30,7 @@ public class FacadeController {
 //		}
 		try {
 			roomService.userJoinRoom(user, roomName);
+			System.out.println("Der User "+user.getUserName()+" ist dem Raum "+roomName+" beigetreten.");
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		} catch (RoomNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
@@ -40,19 +41,20 @@ public class FacadeController {
 		}
 	}
 
-	@RequestMapping(value = GlobalConstantsAndValidation.BASEPATH + GlobalConstantsAndValidation.ROOM_USER_RESOURCE, method = RequestMethod.POST)
+	@RequestMapping(value = GlobalConstantsAndValidation.BASEPATH + GlobalConstantsAndValidation.ROOM_USER_RESOURCE, method = RequestMethod.DELETE)
 	public ResponseEntity<?> userLeaveRoom(@PathVariable String roomName, @PathVariable String userName) {
 		if (!roomName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
 			
 			
-			return new ResponseEntity<>("Der �bergebene roomName: " + roomName + " entspricht nicht der Regex: "
+			return new ResponseEntity<>("Der übergebene roomName: " + roomName + " entspricht nicht der Regex: "
 					+ GlobalConstantsAndValidation.NAME_REGEX, HttpStatus.NOT_FOUND);
 		} else if (!userName.matches(GlobalConstantsAndValidation.NAME_REGEX)) {
-			return new ResponseEntity<>("Der �bergebene userName: " + userName + " entspricht nicht der Regex: "
+			return new ResponseEntity<>("Der übergebene userName: " + userName + " entspricht nicht der Regex: "
 					+ GlobalConstantsAndValidation.NAME_REGEX, HttpStatus.NOT_FOUND);
 		}
 		try {
 			roomService.userLeaveRoom(roomName, userName);
+			System.out.println("Der User "+userName+" hat den Raum "+roomName+" verlassen.");
 			return new ResponseEntity<>(HttpStatus.ACCEPTED);
 		} catch (NameNotValidException|GivenObjectNotValidException|UserNotExistException | RoomNotFoundException e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);

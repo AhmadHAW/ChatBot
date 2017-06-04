@@ -33,11 +33,10 @@ public class HistoryManager implements HistoryManagerInterface {
 
     private void doItWithMessage(Message message) throws InterruptedException, RoomNotFoundException, NameNotValidException, UserNotExistException {
         Room room = roomService.getRoom(message.getRaumname());
-        System.out.println("leseDieMessage.");
         Optional<User> opt = room.getUsers().stream().filter(t -> t.getUserName().equals(message.getSenderUserName())).findFirst();
 		if(!opt.isPresent())
 		{
-			throw new UserNotExistException("Der User "+ message.getSenderUserName()+" hat unberechtigt versucht iene Nachricht in dem Raum zu senden.");
+			throw new UserNotExistException("Der User "+ message.getSenderUserName()+" hat unberechtigt versucht eine Nachricht in dem Raum zu senden.");
 		}
         System.out.println(message.getRaumname()+" "+message.getSenderUserName()+": "+message.getMessage());
     }

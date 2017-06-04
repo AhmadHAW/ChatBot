@@ -11,6 +11,14 @@ import java.net.UnknownHostException;
 public class User implements Serializable {
 	private String userName;
 	private int port;
+
+	@Override
+	public String toString() {
+		return 	"userName='" + userName + '\'' +
+				"\nport=" + port +
+				"\nipAdress=" + ipAdress.getHostAddress();
+	}
+
 	private InetAddress ipAdress;
 
 	public User(String userName, int port, String ipAdress) throws UnknownHostException, NameNotValidException, GivenObjectNotValidException {
@@ -28,13 +36,14 @@ public class User implements Serializable {
 		this.ipAdress = InetAddress.getByName(ipAdress);
 	}
 
+	public User(){
+
+	}
+
 	public void setIpAdress(InetAddress ipAdress) {
 		this.ipAdress = ipAdress;
 	}
 
-	public User(){
-
-	}
 	public String getUserName() {
 		return userName;
 	}

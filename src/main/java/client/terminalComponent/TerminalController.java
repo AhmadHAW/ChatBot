@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import client.ChatClientApp;
 import client.entities.*;
 import client.userInterfaceComponent.StreamListener;
 
@@ -27,6 +28,8 @@ import javax.annotation.PostConstruct;
 @Controller
 public class TerminalController implements CommandLineRunner {
 
+	@Autowired
+	private ChatClientApp app;
 	private Scanner scanner = new Scanner(System.in);
 	private static final String GETROOMSLOCALCOMMAND = "getRoomsLocal";
 	private static final String GETROOMSSERVERCOMMAND = "getRoomsServer";
@@ -55,7 +58,6 @@ public class TerminalController implements CommandLineRunner {
 		System.out.println("Willkommen im Chatbot");
 		System.out.println("Melden Sie sich beim Server an:");
 		meldeUserAn();
-		System.out.println("Sie wurden mit dem User " + GlobalConstantsAndValidation.USER.getUserName() + " angemeldet");
 		System.out.println("Sie können nun: ");
 		printHelpCommands();
 		String command;
@@ -175,7 +177,7 @@ public class TerminalController implements CommandLineRunner {
 							System.out.println("Die Message wird gesendet");
 							try {
 								userInterface.sendMessage(argument1, message);
-								System.out.println("Die Message: " + message + " wurde an alle User in dem Raum "
+								System.out.println("Die Message: \"" + message + "\" wurde an alle User in dem Raum "
 										+ argument1 + " gesendet.");
 							} catch (RoomNotFoundException e) {
 								System.out.println("Der Raum konnte nicht gefunden werden.");
@@ -206,7 +208,7 @@ public class TerminalController implements CommandLineRunner {
 							System.out.println(e.getMessage());
 						}
 						finally {
-							Thread.currentThread().interrupt();
+							app.closeApplication();
 						}
 						break;
 
